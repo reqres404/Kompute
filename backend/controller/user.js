@@ -23,6 +23,13 @@ const register = async (req, res) => {
         res.status(500).json({ message: 'User creation failed' });
     }
 };
+const updateToAdmin = async(req,res)=>{
+    const {id} = req.body
+    const user = await User.findOne({where:{id}})
+    user.role = "Admin"
+    
+    res.status(200).json({role:user.role})
+}
 const login = async (req, res) => {
     const { username, password } = req.body;
 
@@ -50,4 +57,4 @@ const users = async(req,res)=>{
     res.status(200).send(user)
 }
 
-module.exports = {register,login,users}
+module.exports = {register,login,users,updateToAdmin}
