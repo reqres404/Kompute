@@ -45,8 +45,8 @@ const uploadData =async (req,res) =>{
   const getSheetData = async(req,res)=>{
     try {
         const user_id = req.query.user_id;
-    
-        const result = await UploadData.find({ user_ID: user_id });
+        
+        const result = await UploadData.find({ user_id: user_id });
     
         if (result.length === 0) {
           return res.status(404).json({ message: 'No data found for the specified user_ID' });
