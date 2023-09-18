@@ -34,7 +34,7 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await User.findOne({ username }); // Use Mongoose findOne
+        const user = await User.findOne({ username }); 
 
         if (!user) {
             return res.status(404).json({ message: 'No User with that username found' });
