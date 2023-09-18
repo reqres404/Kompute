@@ -34,22 +34,23 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await User.findOne({ where: { username } });
+        const user = await User.findOne({ username }); // Use Mongoose findOne
 
         if (!user) {
-            res.status(404).send('No User with that username found');
+            return res.status(404).json({ message: 'No User with that username found' });
+        }
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (passwordMatch) {
+            const token = jwt.sign({ _id: user._id }, 'secretkey');
+            return res.status(200).json({ message: 'User is authenticated', token, role: user.role });
         } else {
-            const passwordMatch = await bcrypt.compare(password, user.password);
-            const userRole = await user.role
-            if (passwordMatch) {
-                const token = jwt.sign({_id:user._id},'secretkey')
-                res.status(200).json({message:'User is authenticated',token:token,role:userRole});
-            } else {
-                res.status(400).send('Wrong password');
-            }
+            return res.status(400).json({ message: 'Wrong password' });
         }
     } catch (error) {
-        res.status(500).send(error);
+        console.error('Error logging in:', error);
+        return res.status(500).json({ message: 'Login failed' });
     }
 };
 const users = async(req,res)=>{
