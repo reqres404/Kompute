@@ -17,7 +17,7 @@ const register = async (req, res) => {
             password: hashedPassword, 
         });
         const token = jwt.sign({userId:newUser.id},'secretkey',{expiresIn:'1h'})
-        res.status(201).json({ message: 'User created successfully', user: newUser,token });
+        res.status(201).json({ message: 'User created successfully', user: newUser,token,_id:newUser._id });
     } catch (error) {
         console.error('Error creating user:', error);
         res.status(500).json({ message: 'User creation failed' });
@@ -31,7 +31,7 @@ const updateToAdmin = async(req,res)=>{
     res.status(200).json({role:user.role})
 }
 const login = async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password,_id } = req.body;
 
     try {
         const user = await User.findOne({ username }); 
@@ -44,7 +44,7 @@ const login = async (req, res) => {
 
         if (passwordMatch) {
             const token = jwt.sign({ _id: user._id }, 'secretkey');
-            return res.status(200).json({ message: 'User is authenticated', token, role: user.role });
+            return res.status(200).json({ message: 'User is authenticated', user:user });
         } else {
             return res.status(400).json({ message: 'Wrong password' });
         }
