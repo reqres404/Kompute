@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import { Button, TextField, Typography } from "@mui/material";
 import { getData } from "../Api/SheetData";
 
-const DisplayTable = ({ selectedValue }) => {
+const Efforts = ({ selectedValue }) => {
 
     
 
@@ -129,11 +129,12 @@ const DisplayTable = ({ selectedValue }) => {
                     </TableBody>
                 </Table>
                 <Button variant='contained' color="primary" onClick={()=>handelSave()}>Save</Button>
+                <Button variant='contained' color="primary" onClick={()=>handelSave()} sx={{mx:2}}> Calculate Efforts</Button>
             </TableContainer>}
         </Paper>
     )
 }
-export default DisplayTable;
+export default Efforts;
 
 
 

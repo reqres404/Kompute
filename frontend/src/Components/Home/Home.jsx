@@ -5,13 +5,14 @@ import UploadFile from './UploadFile';
 
 const Home = () => {
     const [selectedValue, setSelectedValue] = useState(1);
+    const [customerName,setCustomerName]=useState('');
 
     const handleChange = (event) => {
         setSelectedValue(event.target.value);
     };
-    console.log(selectedValue)
+    
     return (
-        <Box  >
+        <Box >
 
             <Container sx={{ display: 'flex', flexDirection: 'column', gap: 5, mt: 10 }}>
 
@@ -23,7 +24,8 @@ const Home = () => {
                         borderRadius: '2px',
                         borderWidth: '2px'
                     },
-                }} />
+            
+                }} onChange={(e)=>{setCustomerName(e.target.value)}} />
 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                     <InputLabel id="demo-simple-select-outlined-label">Choose option to Enter Data</InputLabel>
@@ -42,7 +44,7 @@ const Home = () => {
                 </Box>
             </Container>
             <DisplayTable selectedValue={selectedValue} />
-            <UploadFile selectedValue={selectedValue} setSelectedValue={setSelectedValue}/>
+            <UploadFile selectedValue={selectedValue} setSelectedValue={setSelectedValue} customerName={customerName}/>
         </Box>
     )
 }
