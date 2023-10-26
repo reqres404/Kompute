@@ -15,6 +15,9 @@ const sheetData = {
 
 const uploadData = async (req, res) => {
   try {
+    const user_id = req.body.user_id;
+    const customerName = req.body.customerName
+
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(req.file.buffer);
     const worksheet = workbook.getWorksheet(1);
@@ -52,8 +55,6 @@ const uploadData = async (req, res) => {
       }
     });
 
-    const user_id = req.body.user_id;
-    const customerName = req.body.customerName
     try {
       // Check if a document with the same user_id already exists
       const existingData = await UploadData.findOne({ user_id });
@@ -66,10 +67,11 @@ const uploadData = async (req, res) => {
           Simple: value.Simple,
           Medium: value.Medium,
           Complex: value.Complex,
-        }));
+        }))
+        existingData.customerName = customerName
         await existingData.save();
 
-        res.status(200).json({ message: "Data updated successfully" });
+        res.status(200).json({ message: "Data updated successfully" ,data:existingData});
       } else {
         // If it doesn't exist, create a new document
         const newUploadData = new UploadData({
@@ -87,7 +89,7 @@ const uploadData = async (req, res) => {
 
         await newUploadData.save();
 
-        res.status(200).json({ message: "Data saved successfully" });
+        res.status(200).json({ message: "Data saved successfully",data:newUploadData });
       }
     } catch (error) {
       console.error("Error saving/updating data to MongoDB", error);
