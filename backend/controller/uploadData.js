@@ -53,7 +53,7 @@ const uploadData = async (req, res) => {
     });
 
     const user_id = req.body.user_id;
-
+    const customerName = req.body.customerName
     try {
       // Check if a document with the same user_id already exists
       const existingData = await UploadData.findOne({ user_id });
@@ -74,6 +74,7 @@ const uploadData = async (req, res) => {
         // If it doesn't exist, create a new document
         const newUploadData = new UploadData({
           user_id: user_id,
+          customerName:customerName.toLowerCase(),
           uploadData: Object.entries(sheetData).map(([key, value]) => ({
             ApplicationTreatment: key,
             Simple: value.Simple,
@@ -233,11 +234,65 @@ const getMasterData = async(req,res) =>{
     res.status(500).json({message:error})
   }
 }
-const updateCustomerData = async(req,res)=>{
-  
+const updateCustomerName = async(req,res)=>{
+  try {
+    const {user_id,customerName} = req.body
+    const filter = {user_id:user_id}
+    const update = {customerName:customerName}
+    const updatedCustomer = await UploadData.findOneAndUpdate(filter,update,{new:true})
+    
+    if (updatedCustomer) {
+      console.log(`Customer name updated to: ${updatedCustomer.customerName}`);
+      res.status(200).send({message:`Customer name updated to: ${updatedCustomer.customerName}`})
+    } else {
+      console.log('Document not found for the given user_id.');
+      res.status(404).send({message:"Document not found for given user_id"})
+    }
+        
+  } catch (error) {
+    res.status(500).send({message:"internal server error"})
+  }
+}
+const modifySheetData=async(req,res) =>{
+  try {
+    const {user_id,updatedSheetData} = req.body
+    const filter = {user_id:user_id}
+    const update = {uploadData:updatedSheetData}
+    const updatedDocument = await UploadData.findOneAndUpdate(filter, update, {
+      new: true, // This option returns the updated document
+    });
+    if(updatedDocument){
+      res.status(200).send({updatedDocument})      
+    }
+    else{
+      res.status(404).send({message:"No Data to update"})
+    }
+
+      
+  } catch (error) {
+    res.status(500).send({message:"Internal server error "})
+  }
+
 }
 const modifyBaseline=async(req,res) =>{
-  res.status(200).send("this API updates user Baseline")
+  try {
+    const {user_id,updatedBaseline} = req.body
+    const filter = {user_id:user_id}
+    const update = {userBaseline:updatedBaseline}
+    const updatedDocument = await UploadData.findOneAndUpdate(filter, update, {
+      new: true, // This option returns the updated document
+    });
+    if(updatedDocument){
+      res.status(200).send({updatedDocument})      
+    }
+    else{
+      res.status(404).send({message:"No Data to update"})
+    }
+
+      
+  } catch (error) {
+    res.status(500).send({message:"Internal server error "})
+  }
 
 }
 
@@ -246,5 +301,7 @@ module.exports = {
                   getSheetData,
                   uploadMasterData,
                   getMasterData,
+                  updateCustomerName,
+                  modifySheetData,
                   modifyBaseline
                 };
