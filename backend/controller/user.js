@@ -31,10 +31,10 @@ const updateToAdmin = async(req,res)=>{
     res.status(200).json({role:user.role})
 }
 const login = async (req, res) => {
-    const { username, password,_id } = req.body;
+    const { username, password,_id,email } = req.body;
 
     try {
-        const user = await User.findOne({ username }); 
+        const user = await User.findOne({ email }); 
 
         if (!user) {
             return res.status(404).json({ message: 'No User with that username found' });
@@ -44,7 +44,7 @@ const login = async (req, res) => {
 
         if (passwordMatch) {
             const token = jwt.sign({ _id: user._id }, 'secretkey');
-            return res.status(200).json({ message: 'User is authenticated', user:user });
+            return res.status(200).json({ message: 'User is authenticated', user:user,token });
         } else {
             return res.status(400).json({ message: 'Wrong password' });
         }

@@ -1,0 +1,15 @@
+Register 
+Login
+UpdateRole
+UploadData
+
+uploadMasterData
+    Need to upload data as masterData in specific mongo doc
+
+
+getMasterData
+    this API will be consumed to copy masterData into baseline
+
+UpdateBaseline
+    baseLine should copy masterData in it and then when changed masterData
+    should not be changed
