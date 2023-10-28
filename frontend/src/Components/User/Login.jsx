@@ -46,8 +46,7 @@ const Login = () => {
       }}>
         
 
-        <AccountCircleRoundedIcon sx={{fontSize:'100px',position:'absolute',top:-40,left:"35%"}} color='primary'  />
-
+         <Typography variant='h1' color='black'>Login</Typography>
         
         <TextField
           type='text'

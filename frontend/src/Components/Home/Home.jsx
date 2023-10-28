@@ -14,9 +14,9 @@ const Home = () => {
     return (
         <Box >
 
-            <Container sx={{ display: 'flex', flexDirection: 'column', gap: 5, mt: 10 }}>
+            <Container sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 5 }}>
 
-                <Typography variant='h1' sx={{ fontWeight: 900, }}>Welcome to Kompute, An estimation framework powered by CME-CLOUD</Typography>
+                <Typography variant='h1' sx={{ fontWeight: 900 }}>Welcome to Kompute, An estimation framework powered by CME-CLOUD</Typography>
                 <TextField label="Enter Customer Name" style={{ width: '500px' }} InputProps={{
                     style: {
                         //   height:'48px',

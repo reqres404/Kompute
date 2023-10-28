@@ -12,8 +12,8 @@ router.post("/masterData",upload.single('masterFile'),uploadMasterData)
 router.post("/retrieveSheetData",getSheetData)
 router.post("/retrieveMasterData",getMasterData)
 
-router.put("/updateCustomer",updateCustomerName)
-router.put("/modifyBaseline",modifyBaseline)
-router.put("/modifySheetData",modifySheetData)
+router.put("/updateCustomer",updateCustomerName) //
+router.put("/modifyBaseline",modifyBaseline) //uid,array:'updatedSheetData'
+router.put("/modifySheetData",modifySheetData) //uid,array:'updatedSheetData'
 
 module.exports = router

@@ -6,6 +6,7 @@ const UploadFile = ({ selectedValue,setSelectedValue,customerName }) => {
 
   const [showModal, setShowmodal] = React.useState(false);
   const id =localStorage.getItem('_id');
+
   // console.log(id)
 
   useEffect(() => {
@@ -34,6 +35,8 @@ const UploadFile = ({ selectedValue,setSelectedValue,customerName }) => {
       formData.append('file', selectedFile);
       formData.append('user_id',id)
       formData.append('customerName',customerName)
+      if(customerName!='')
+      localStorage.setItem('customerName',customerName);
 
       console.log(customerName)
       const response=await uploadData(formData)

@@ -8,7 +8,7 @@ export const getData= async (data)=>{
     try{
     let response= await axios.post('api/upload/retrieveSheetData',{user_id:id})
     
-    console.log(response.data)
+    // console.log(response.data)
     return response=response.data;
     }
     catch(error){
