@@ -8,10 +8,11 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, TextField, Typography } from "@mui/material";
 import { getData } from "../Api/SheetData";
+import axios from "axios";
 
 const DisplayTable = ({ selectedValue }) => {
 
-    
+    const user_id=localStorage.getItem('_id')
 
 
     const [edit, setEdit] = useState(true)
@@ -26,8 +27,12 @@ const DisplayTable = ({ selectedValue }) => {
         
     };
 
-    const handelSave=()=>{
+    const handelSave=async ()=>{
         console.log(data)
+        let response = await axios.put('api/upload/modifySheetData',{updatedSheetData:data,user_id:user_id});
+        console.log(response)
+        setData(response.data.updatedDocument.uploadData)
+        
     }
 
 
@@ -57,12 +62,12 @@ const DisplayTable = ({ selectedValue }) => {
 
 
     return (
-        <Paper elevation={21} sx={{marginX:30,padding:5}}>
+        <Paper elevation={21} sx={{marginX:30,padding:3,mt:3,maxWidth:'800px'}}>
             
          {!edit && <Typography sx={{fontSize:'15px',color:'green'}} >Edit now</Typography>}
          {data.length > 0 &&
             <TableContainer  >
-                <Table sx={{minWidth:'700px'}} aria-label="simple table">
+                <Table  aria-label="simple table">
                     <TableHead>
                         <TableRow>
 

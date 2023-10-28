@@ -8,13 +8,14 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, TextField, Typography } from "@mui/material";
 import { getData } from "../Api/SheetData";
+import { getMasterData } from "../Api/MasterData";
 
 const BaseLine = ({ selectedValue }) => {
 
     
 
 
-    const [edit, setEdit] = useState(true)
+    const [edit, setEdit] = useState(false)
 
     const [data, setData] = useState([]);
 
@@ -30,22 +31,25 @@ const BaseLine = ({ selectedValue }) => {
         console.log(data)
     }
 
-
-    useEffect(() => {
+    const handelReset=async()=>{
+        const data= await getMasterData();
+        console.log(data)
+    }
+    // useEffect(() => {
         
-        if (selectedValue == 20) {
-            setEdit(false);
-        }else{
-            setEdit(true)
-        }
-    }, [selectedValue])
+    //     if (selectedValue == 20) {
+    //         setEdit(true);
+    //     }else{
+    //         setEdit(true)
+    //     }
+    // }, [selectedValue])
 
     useEffect(() => {
         const fetchData = async () => {
           try {
             const ans = await getData(localStorage.getItem("_id"));
-            setData(ans[0].uploadData)
-            // console.log(ans[0].uploadData)
+            setData(ans[0].userBaseline)
+            console.log(ans[0].userBaseline)
           } catch (error) {
             console.error(error);
           }
@@ -128,7 +132,7 @@ const BaseLine = ({ selectedValue }) => {
                         }
                     </TableBody>
                 </Table>
-                <Button variant='contained' color="primary" onClick={()=>handelSave()}>Save</Button>
+                <Button variant='contained' color="primary" onClick={()=>handelReset()}>Reset</Button>
                 <Button variant='contained' color="primary" onClick={()=>handelSave()} sx={{mx:2}}> Modify BaseLine</Button>
             </TableContainer>}
         </Paper>
