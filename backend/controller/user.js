@@ -1,9 +1,47 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User= require('../model/user')
-
+const UploadData = require("../model/uploadData");
+const MasterData = require("../model/masterData")
 const saltRounds = 10;
 
+const dataArray = [
+    {
+      "ApplicationTreatment": "COTS Rehost",
+      "Simple": 0,
+      "Medium": 0,
+      "Complex": 0,
+      "_id": "653a4218696138efbe944460"
+    },
+    {
+      "ApplicationTreatment": "COTS Replatform",
+      "Simple": 0,
+      "Medium": 0,
+      "Complex": 0,
+      "_id": "653a4218696138efbe944461"
+    },
+    {
+      "ApplicationTreatment": "Bespoke Rehost",
+      "Simple": 0,
+      "Medium": 0,
+      "Complex": 0,
+      "_id": "653a4218696138efbe944462"
+    },
+    {
+      "ApplicationTreatment": "Bespoke Replatform",
+      "Simple": 0,
+      "Medium": 0,
+      "Complex": 0,
+      "_id": "653a4218696138efbe944463"
+    },
+    {
+      "ApplicationTreatment": "Bespoke Refactor",
+      "Simple": 0,
+      "Medium": 0,
+      "Complex": 0,
+      "_id": "653a4218696138efbe944464"
+    }
+  ]
 
 const register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -31,8 +69,18 @@ const updateToAdmin = async(req,res)=>{
     res.status(200).json({role:user.role})
 }
 const login = async (req, res) => {
-    const { username, password,_id,email } = req.body;
-
+    const { username, password,user_id,email } = req.body;
+    const uploadData = await UploadData.findOne({user_id})
+    const masterData = await MasterData.findOne({dataName:"master"})
+    if(!uploadData){
+        const newUploadData = new UploadData({
+            user_id :user_id,
+            customerName: " ",
+            uploadData:dataArray,
+            userBaseline:masterData.data
+        })
+        await newUploadData.save();
+    }
     try {
         const user = await User.findOne({ email }); 
 
