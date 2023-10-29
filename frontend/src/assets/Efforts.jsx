@@ -43,26 +43,17 @@ const Efforts = ({ selectedValue }) => {
         }
     }, [selectedValue])
 
-    useEffect(() => {
-        const fetchData = async () => {
-          try {
-            // handelCalculateEfforts()
-            // console.log(ans[0].uploadData)
-          } catch (error) {
-            console.error(error);
-          }
-        };
-      
-        fetchData();
-      }, []);
+   
       
       const handelCalculateEfforts=async ()=>{
             const SheetData = await getData(localStorage.getItem("_id"));
-            const MasterData=await getMasterData();
-            setMasterData(MasterData.data[0].data)
+            // const MasterData=await getMasterData();
+
+            
+            setMasterData(SheetData[0].userBaseline)
             setData(SheetData[0].uploadData)
-            console.log(data);
-            console.log(SheetData);
+            // console.log(data);
+            // console.log(masterdata);
 
             let multipliedArray = [];
 
@@ -79,6 +70,7 @@ const Efforts = ({ selectedValue }) => {
                 }
 
                 setEfforts(multipliedArray);
+                console.log(efforts)
         }
 
 
@@ -155,7 +147,6 @@ const Efforts = ({ selectedValue }) => {
                         }
                     </TableBody>
                 </Table>
-                <Button variant='contained' color="primary" onClick={()=>handelSave()}>Save</Button>
             </TableContainer>}
         </Paper>
     )

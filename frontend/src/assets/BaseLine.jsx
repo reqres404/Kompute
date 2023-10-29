@@ -38,21 +38,13 @@ const BaseLine = ({ selectedValue }) => {
         // console.log(data.data[0].data)
        setData(data.data[0].data)
     }
-    // useEffect(() => {
-        
-    //     if (selectedValue == 20) {
-    //         setEdit(true);
-    //     }else{
-    //         setEdit(true)
-    //     }
-    // }, [selectedValue])
-
+   
     useEffect(() => {
         const fetchData = async () => {
           try {
             const ans = await getData(localStorage.getItem("_id"));
             setData(ans[0].userBaseline)
-            // console.log(ans[0].userBaseline)
+            console.log(ans[0].userBaseline)
           } catch (error) {
             console.error(error);
           }
@@ -66,7 +58,6 @@ const BaseLine = ({ selectedValue }) => {
     return (
         <Paper elevation={21} sx={{marginX:30,padding:5}}>
             
-         {!edit && <Typography sx={{fontSize:'15px',color:'green'}} >Edit now</Typography>}
          {data.length > 0 &&
             <TableContainer  >
                 <Table sx={{minWidth:'700px'}} aria-label="simple table">
