@@ -69,21 +69,10 @@ const updateToAdmin = async(req,res)=>{
     res.status(200).json({role:user.role})
 }
 const login = async (req, res) => {
-    const { username, password,user_id,email } = req.body;
-    const uploadData = await UploadData.findOne({user_id})
-    const masterData = await MasterData.findOne({dataName:"master"})
-    if(!uploadData){
-        const newUploadData = new UploadData({
-            user_id :user_id,
-            customerName: " ",
-            uploadData:dataArray,
-            userBaseline:masterData.data
-        })
-        await newUploadData.save();
-    }
+    const {password,email } = req.body;
+
     try {
         const user = await User.findOne({ email }); 
-
         if (!user) {
             return res.status(404).json({ message: 'No User with that username found' });
         }
@@ -92,6 +81,18 @@ const login = async (req, res) => {
 
         if (passwordMatch) {
             const token = jwt.sign({ _id: user._id }, 'secretkey');
+            const user_id = user._id.toString()
+            const uploadData = await UploadData.findOne({user_id})
+            const masterData = await MasterData.findOne({dataName:"master"})
+            if(!uploadData){
+                const newUploadData = new UploadData({
+                    user_id :user_id,
+                    customerName: " ",
+                    uploadData:dataArray,
+                    userBaseline:masterData.data
+                })
+                await newUploadData.save();
+            }
             return res.status(200).json({ message: 'User is authenticated', user:user,token });
         } else {
             return res.status(400).json({ message: 'Wrong password' });
