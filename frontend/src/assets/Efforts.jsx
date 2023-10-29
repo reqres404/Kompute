@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, TextField, Typography } from "@mui/material";
 import { getData } from "../Api/SheetData";
+import { getMasterData } from "../Api/MasterData";
 
 const Efforts = ({ selectedValue }) => {
 
@@ -17,6 +18,8 @@ const Efforts = ({ selectedValue }) => {
     const [edit, setEdit] = useState(true)
 
     const [data, setData] = useState([]);
+    const [masterdata, setMasterData] = useState([]);
+    const [efforts,setEfforts]=useState([]);
 
     const handleCellEdit = (rowIndex, colName, value) => {
 
@@ -43,8 +46,7 @@ const Efforts = ({ selectedValue }) => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const ans = await getData(localStorage.getItem("_id"));
-            setData(ans[0].uploadData)
+            // handelCalculateEfforts()
             // console.log(ans[0].uploadData)
           } catch (error) {
             console.error(error);
@@ -54,13 +56,38 @@ const Efforts = ({ selectedValue }) => {
         fetchData();
       }, []);
       
+      const handelCalculateEfforts=async ()=>{
+            const SheetData = await getData(localStorage.getItem("_id"));
+            const MasterData=await getMasterData();
+            setMasterData(MasterData.data[0].data)
+            setData(SheetData[0].uploadData)
+            console.log(data);
+            console.log(SheetData);
+
+            let multipliedArray = [];
+
+            for (let i = 0; i < masterdata.length; i++) {
+                 let multipliedObject = {};
+                for (let key in masterdata[i]) {
+                    if (key !== 'ApplicationTreatment' && key !== '_id') {
+                     multipliedObject[key] = masterdata[i][key] * data[i][key];
+                    } else {
+                    multipliedObject[key] = masterdata[i][key];
+                 }
+                }
+                multipliedArray.push(multipliedObject);
+                }
+
+                setEfforts(multipliedArray);
+        }
 
 
     return (
         <Paper elevation={21} sx={{marginX:30,padding:5}}>
+        <Button variant='contained' color="primary" onClick={()=>handelCalculateEfforts()} sx={{mx:2}}> Calculate Efforts</Button>
             
          {!edit && <Typography sx={{fontSize:'15px',color:'green'}} >Edit now</Typography>}
-         {data.length > 0 &&
+         {efforts.length > 0 &&
             <TableContainer  >
                 <Table sx={{minWidth:'700px'}} aria-label="simple table">
                     <TableHead>
@@ -74,7 +101,7 @@ const Efforts = ({ selectedValue }) => {
                     </TableHead>
                     <TableBody>
                         {
-                           data.length > 0 && data.map((curUser, rowIndex) => {
+                           efforts.length > 0 && efforts.map((curUser, rowIndex) => {
                                const { ApplicationTreatment, Simple, Medium } = curUser;
                                const { Complex } = curUser;
                             //    console.log(Simple)
@@ -129,7 +156,6 @@ const Efforts = ({ selectedValue }) => {
                     </TableBody>
                 </Table>
                 <Button variant='contained' color="primary" onClick={()=>handelSave()}>Save</Button>
-                <Button variant='contained' color="primary" onClick={()=>handelSave()} sx={{mx:2}}> Calculate Efforts</Button>
             </TableContainer>}
         </Paper>
     )

@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, TextField, Typography } from "@mui/material";
 import { getData } from "../Api/SheetData";
-import { getMasterData } from "../Api/MasterData";
+import { getMasterData, modifyBaseline } from "../Api/MasterData";
 
 const BaseLine = ({ selectedValue }) => {
 
@@ -27,13 +27,16 @@ const BaseLine = ({ selectedValue }) => {
         
     };
 
-    const handelSave=()=>{
-        console.log(data)
+    const handelSave=async()=>{
+        let response=await modifyBaseline(data);
+        console.log(response);
+        
     }
 
     const handelReset=async()=>{
         const data= await getMasterData();
-        console.log(data)
+        // console.log(data.data[0].data)
+       setData(data.data[0].data)
     }
     // useEffect(() => {
         
@@ -49,7 +52,7 @@ const BaseLine = ({ selectedValue }) => {
           try {
             const ans = await getData(localStorage.getItem("_id"));
             setData(ans[0].userBaseline)
-            console.log(ans[0].userBaseline)
+            // console.log(ans[0].userBaseline)
           } catch (error) {
             console.error(error);
           }
