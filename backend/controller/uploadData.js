@@ -13,10 +13,99 @@ const sheetData = {
   "Bespoke Refactor": { Simple: 0, Medium: 0, Complex: 0 },
 };
 
-const uploadData = async (req, res) => {
+// const uploadData = async (req, res) => {
+//   try {
+//     const user_id = req.body.user_id;
+//     const customerName = req.body.customerName.toLowerCase()
+
+//     const workbook = new ExcelJS.Workbook();
+//     await workbook.xlsx.load(req.file.buffer);
+//     const worksheet = workbook.getWorksheet(1);
+
+//     worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+//       if (rowNumber > 1) {
+//         // This has to be converted into dynamic rather than fixed Numbers
+       
+//         const serverCount = row.getCell(2).value;
+//         const rLane = row.getCell(3).value;
+//         const cotsBespoke = row.getCell(4).value;
+//         const complexity = row.getCell(9).value;
+
+//         let applicationTreatment;
+//         if (cotsBespoke === "COTS" && rLane === "Rehost") {
+//           applicationTreatment = "COTS Rehost";
+//         } else if (cotsBespoke === "COTS" && rLane === "Replatform") {
+//           applicationTreatment = "COTS Replatform";
+//         } else if (cotsBespoke === "Bespoke" && rLane === "Rehost") {
+//           applicationTreatment = "Bespoke Rehost";
+//         } else if (cotsBespoke === "Bespoke" && rLane === "Replatform") {
+//           applicationTreatment = "Bespoke Replatform";
+//         } else {
+//           applicationTreatment = "Bespoke Refactor";
+//         }
+
+//         // Update the counts under the appropriate "Application Treatment"
+//         if (complexity === "Simple") {
+//           sheetData[applicationTreatment].Simple += serverCount;
+//         } else if (complexity === "Medium") {
+//           sheetData[applicationTreatment].Medium += serverCount;
+//         } else if (complexity === "Complex") {
+//           sheetData[applicationTreatment].Complex += serverCount;
+//         }
+//       }
+//     });
+
+//     try {
+//       // Check if a document with the same user_id already exists
+//       const existingData = await UploadData.findOne({ user_id });
+//       const masterData = await MasterData.findOne({dataName:"master"})
+      
+//       if (existingData) {
+//         // If it exists, update the existing document
+//         existingData.uploadData = Object.entries(sheetData).map(([key, value]) => ({
+//           ApplicationTreatment: key,
+//           Simple: value.Simple,
+//           Medium: value.Medium,
+//           Complex: value.Complex,
+//         }))
+//         existingData.customerName = customerName        
+//         await existingData.save();
+
+//         res.status(200).json({ message: "Data updated successfully" ,data:existingData});
+//       } else {
+//         // If it doesn't exist, create a new document
+        
+//         const newUploadData = new UploadData({
+//           user_id: user_id,
+//           customerName:customerName.toLowerCase(),
+//           uploadData: Object.entries(sheetData).map(([key, value]) => ({
+//             ApplicationTreatment: key,
+//             Simple: value.Simple,
+//             Medium: value.Medium,
+//             Complex: value.Complex,
+//           })),
+//           userBaseline: masterData.data,
+          
+//         });
+
+//         await newUploadData.save();
+
+//         res.status(200).json({ message: "Data saved successfully",data:newUploadData });
+//       }
+//     } catch (error) {
+//       console.error("Error saving/updating data to MongoDB", error);
+//       res.status(500).json({ message:error });
+//     }
+//   } catch (error) {
+//     console.error("Error processing data:", error);
+//     res.status(500).json({ error: error });
+//   }
+// };
+
+const uploadData = async (req, res) => { //According to customer name
   try {
     const user_id = req.body.user_id;
-    const customerName = req.body.customerName
+    const customerName = req.body.customerName.toLowerCase()
 
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(req.file.buffer);
@@ -57,7 +146,7 @@ const uploadData = async (req, res) => {
 
     try {
       // Check if a document with the same user_id already exists
-      const existingData = await UploadData.findOne({ user_id });
+      const existingData = await UploadData.findOne({ customerName });
       const masterData = await MasterData.findOne({dataName:"master"})
       
       if (existingData) {
@@ -68,12 +157,13 @@ const uploadData = async (req, res) => {
           Medium: value.Medium,
           Complex: value.Complex,
         }))
-        existingData.customerName = customerName
+        existingData.customerName = customerName        
         await existingData.save();
 
         res.status(200).json({ message: "Data updated successfully" ,data:existingData});
       } else {
         // If it doesn't exist, create a new document
+        
         const newUploadData = new UploadData({
           user_id: user_id,
           customerName:customerName.toLowerCase(),
@@ -93,7 +183,7 @@ const uploadData = async (req, res) => {
       }
     } catch (error) {
       console.error("Error saving/updating data to MongoDB", error);
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ message:error });
     }
   } catch (error) {
     console.error("Error processing data:", error);
@@ -104,13 +194,14 @@ const uploadData = async (req, res) => {
 const getSheetData = async (req, res) => {
   try {
     const user_id = req.body.user_id;
+    const customerName = req.body.customerName.toLowerCase()
 
-    const sheetData = await UploadData.find({ user_id: user_id });
+    const sheetData = await UploadData.find({ customerName:customerName });
 
     if (sheetData.length === 0) {
       return res
         .status(404)
-        .json({ message: "No data found for the specified user_ID" });
+        .json({ message: "No data found for the specified Customer Name" });
     }
 
     res.status(200).json(sheetData);
@@ -257,8 +348,8 @@ const updateCustomerName = async(req,res)=>{
 }
 const modifySheetData=async(req,res) =>{
   try {
-    const {user_id,updatedSheetData} = req.body
-    const filter = {user_id:user_id}
+    const {updatedSheetData,customerName} = req.body
+    const filter = {customerName:customerName}
     const update = {uploadData:updatedSheetData}
     const updatedDocument = await UploadData.findOneAndUpdate(filter, update, {
       new: true, // This option returns the updated document
@@ -278,8 +369,8 @@ const modifySheetData=async(req,res) =>{
 }
 const modifyBaseline=async(req,res) =>{
   try {
-    const {user_id,updatedBaseline} = req.body
-    const filter = {user_id:user_id}
+    const {customerName,updatedBaseline} = req.body
+    const filter = {customerName:customerName}
     const update = {userBaseline:updatedBaseline}
     const updatedDocument = await UploadData.findOneAndUpdate(filter, update, {
       new: true, // This option returns the updated document
