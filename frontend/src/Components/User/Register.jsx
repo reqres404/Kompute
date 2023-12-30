@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Container, IconButton, TextField, Typography } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -12,9 +12,9 @@ import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
 
-  const navigate=useNavigate();
-  const [showPassword,SetShowPassword]=useState(false)
-  const [userData,setUserData]=useState({email:"",password:"",username:""})
+  const navigate = useNavigate();
+  const [showPassword, SetShowPassword] = useState(false)
+  const [userData, setUserData] = useState({ email: "", password: "", username: "" })
 
   const handelUserData = (e) => {
     setUserData({
@@ -23,33 +23,39 @@ const Register = () => {
     });
   }
 
-  const handelSubmit=async()=>{
-    try{
-    const response=await register(userData);
-    if(response.status==201){
-      navigate('/login')
+  const handelSubmit = async () => {
+    try {
+      const response = await register(userData);
+      if (response.status == 201) {
+        navigate('/login')
+      }
+    } catch (e) {
+      alert(e.response.data.message)
     }
-  }catch(e){
-    alert(e.response.data.message)
   }
-    
 
 
-  }
+
+  useEffect(()=>{
+    let token= localStorage.getItem("token")
+    if(token){
+     navigate("/")
+    }
+   },[])
 
 
   return (
     <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <Box sx={{
-        display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 4.5,borderRadius:'15px',
-        alignItems: 'center', width: '28vw', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.5)', px: 8, py: 2, height: 'auto'
+        display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 4.5, borderRadius: '12px',
+        alignItems: 'center', width: '24vw', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.4)', px: 4.2, py:6, height: 'auto'
       }}>
 
         <Typography variant='h1' >Register</Typography>
 
         <TextField
           type='text'
-          variant='standard'
+          // variant='standard'
           fullWidth
           placeholder='Name'
           InputProps={{
@@ -65,7 +71,7 @@ const Register = () => {
         />
         <TextField
           type='text'
-          variant='standard'
+          // variant='standard'
           fullWidth
           placeholder='Email'
           InputProps={{
@@ -84,8 +90,8 @@ const Register = () => {
         />
 
         <TextField
-          type={showPassword ? 'text':'password'}
-          variant='standard'
+          type={showPassword ? 'text' : 'password'}
+          // variant='standard'
           fullWidth
           placeholder='Password'
           InputProps={{
@@ -96,8 +102,8 @@ const Register = () => {
             ),
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={()=>SetShowPassword(!showPassword)}>
-                  {showPassword ? <VisibilityIcon color='primary'/>:<VisibilityOffIcon color='primary'/>}
+                <IconButton onClick={() => SetShowPassword(!showPassword)}>
+                  {showPassword ? <VisibilityIcon color='primary' /> : <VisibilityOffIcon color='primary' />}
                 </IconButton>
               </InputAdornment>
             ),
@@ -107,11 +113,20 @@ const Register = () => {
           onChange={handelUserData}
         />
 
-          <Button variant='contained' sx={{borderRadius:20,px:4}} onClick={handelSubmit}>
-            Create Account
-          </Button>
+        
+       
 
-          <Typography component='span' fontSize='13px' sx={{p:0,m:0}}>Already have account? Sign In</Typography>
+        <Box sx={{ width: "100%", display: 'flex', justifyContent: "space-between" }}>
+
+          <Button variant='contained' sx={{ borderRadius: "12px", px: 5.5, py: 1.5 }}  onClick={()=>{navigate('/login')}}>
+            Log In
+          </Button>
+          <Button variant='contained' sx={{ borderRadius: "12px", px: 5.5,py:1.5,backgroundColor:'#FFC0CB' }} onClick={handelSubmit}>
+          SIGN up
+        </Button>
+
+
+        </Box>
 
       </Box>
     </Container>

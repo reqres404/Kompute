@@ -62,7 +62,7 @@ const DisplayTable = ({ selectedValue }) => {
 
 
     return (
-        <Paper elevation={21} sx={{marginX:30,padding:3,mt:3,maxWidth:'800px'}}>
+        <Paper elevation={21} sx={{padding:3,mt:3,maxWidth:'800px',borderRadius:'15px'}}>
             
          {!edit && <Typography sx={{fontSize:'15px',color:'green'}} >Edit now</Typography>}
          {data.length > 0 &&
@@ -133,7 +133,7 @@ const DisplayTable = ({ selectedValue }) => {
                         }
                     </TableBody>
                 </Table>
-                <Button variant='contained' color="primary" onClick={()=>handelSave()}>Save</Button>
+                <Button variant='contained' color="primary" sx={{borderRadius:"12px"}} onClick={()=>handelSave()}>Save</Button>
             </TableContainer>}
         </Paper>
     )

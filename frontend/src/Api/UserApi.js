@@ -28,12 +28,12 @@ export const login =async (data)=>{
     try {
         let response=await axios.post('api/user/login',data)
         console.log(response);
-        // if(response.status==200){
-        // localStorage.setItem('token',response.data.token)
-        // localStorage.setItem('role',response.data.user.role)
-        // localStorage.setItem('_id',response.data.user._id)
-        // }
-        // return response;
+        if(response.status==200){
+        localStorage.setItem('token',response.data.token)
+        localStorage.setItem('role',response.data.user.role)
+        localStorage.setItem('_id',response.data.user._id)
+        }
+        return response;
     } catch (error) {
         console.log(error.response.data)
         // alert(error.response.data)

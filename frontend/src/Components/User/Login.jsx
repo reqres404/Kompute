@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Container, IconButton, TextField, Typography } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
@@ -36,13 +36,23 @@ const Login = () => {
   }
 
 
+  useEffect(()=>{
+   let token= localStorage.getItem("token")
+
+   if(token){
+    navigate("/")
+   }
+  },[])
+
+
 
 
   return (
+
     <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <Box sx={{
-        display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 4.5,borderRadius:'15px',position:'relative',
-        alignItems: 'center', width: '26vw', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.4)', px: 6, py: 2, height: '420px',color:'rgba(255, 255, 255, 0.5)'
+        display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 4.5,borderRadius:'12px',position:'relative',
+        alignItems: 'center', width: '24vw', boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.4)', px: 4.5, py: 2, height: '470px',color:'rgba(255, 255, 255, 0.5)'
       }}>
         
 
@@ -50,7 +60,7 @@ const Login = () => {
         
         <TextField
           type='text'
-          variant='standard'
+          // variant=''
           fullWidth
           placeholder='Email'
           InputProps={{
@@ -70,7 +80,7 @@ const Login = () => {
 
         <TextField
           type={showPassword ? 'text':'password'}
-          variant='standard'
+          // variant='standard'
           fullWidth
           name='password'
           placeholder='Password'
@@ -92,11 +102,19 @@ const Login = () => {
 
         />
 
-          <Button variant='contained' sx={{borderRadius:20,px:4}} onClick={handelLogin}>
+        <Box sx={{width:"100%",display:'flex',justifyContent:"space-between"}}>
+
+        <Button variant='contained' sx={{borderRadius:"12px",px:5.5,py:1.5}} onClick={handelLogin}>
             Log In
           </Button>
+          <Button variant='contained' sx={{borderRadius:"12px",px:5.5,py:1.5,backgroundColor:'#FFC0CB'}} onClick={()=>{navigate("/register")}}>
+            Sign Up
+          </Button>
+          
 
-          <Typography component='span' fontSize='13px' sx={{p:0,m:0,color:'black'}}>Dont have account? Register</Typography>
+        </Box>
+
+
 
       </Box>
     </Container>
