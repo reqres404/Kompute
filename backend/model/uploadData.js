@@ -9,6 +9,7 @@ const uploadDataSchema = new mongoose.Schema({
   customerName:{
     type:String,
     required:true,
+    unique:true,
     default:""
   },
   uploadData: [
